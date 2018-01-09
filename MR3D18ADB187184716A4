@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<xsl:stylesheet
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+    <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+    <!--
+
+Gilbane, Inc-US
+BulkposterUS@GilbaneInc.com=ED3V3MR5ZJ3L5ZZF7V4J
+=
+
+Feed:
+https://gilbane-building-hr.silkroad.com/api/index.cfm?fuseaction=app.getJobListings&FORMAT=xml&JOBPLACEMENT=external&KEYWORD=&LANGUAGE=en&VERSION=1
+
+-->
+    <xsl:template match="*">
+        <xsl:variable name="q">"</xsl:variable>
+        <xsl:variable name="lsq">&#x201C;</xsl:variable>
+        <xsl:variable name="rsq">&#x201D;</xsl:variable>
+        <xsl:variable name="sq">'</xsl:variable>
+        <xsl:variable name="rssq">&#x2019;</xsl:variable>
+        <xsl:variable name="lf"/>
+        <xsl:variable name="brtag">
+            <BR/>
+        </xsl:variable>
+        <xsl:element name="Batch">
+            <xsl:element name="Header">
+                <Field name="CBVendorID" value="ED3V3MR5ZJ3L5ZZF7V4J"/>
+                <Field name="CBOrigin" value="silkroad-CustomXSL"/>
+                <Field name="CBReplace" value="Yes"/>
+                <Field name="CBEmailPref" value="EmailOnlyIfErrors"/>
+                <Field name="CBReplyTo" value="dpisupport@careerbuilder.com"/>
+            </xsl:element>
+            <xsl:for-each select="job[contains(jobDescription, '#Gilbane')]">
+                <xsl:element name="Job">
+                    <Field name="CBAction" value="Add"/>
+                    <Field name="CBJobSkinDID" value="JBHM15J6RQDSLV54S600"/>
+                    <Field name="CBName" value="MyNewCompany150119044148"/>
+                    <Field name="CBProductID" value="JCPRI0"/>
+                    <Field name="CBPrimaryIndustry" value="IND010"/>
+                    <xsl:variable name="JobID" select="normalize-space(jobId)"/>
+                    <xsl:variable name="JobDescription" select="normalize-space(jobDescription)"/>
+                    <xsl:variable name="JobTitle" select="normalize-space(title)"/>
+                    <xsl:variable name="JobURL" select="normalize-space(applyUrl)"/>
+                    <xsl:variable name="Company" select="normalize-space(businessUnit)"/>
+                    <xsl:variable name="City" select="normalize-space(jobLocation/municipality)"/>
+                    <xsl:variable name="State" select="normalize-space(jobLocation/region)"/>
+                    <xsl:variable name="Country" select="normalize-space(jobLocation/countryCode)"/>
+                    <xsl:variable name="category" select="normalize-space(category)"/>
+                    <xsl:variable name="EmployeeType" select="normalize-space(positionType)"/>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBUserJobID</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="concat('US~', $JobID)"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBDisplayJobID</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$JobID"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBContactCompany</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="'Gilbane'"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBDescription</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$JobDescription"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:variable name="Requirements1" select="concat(requiredSkills, requiredExperience)"/>
+                    <xsl:variable name="Requirements2" select="concat(requiredSkills,'&lt;br /&gt;',requiredExperience)"/>
+                    <xsl:variable name="FinalRequirements">
+                        <xsl:choose>
+                            <xsl:when test="string-length($Requirements1) &gt; 0">
+                                <xsl:value-of select="$Requirements2"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="$Requirements1"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBRequirements</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$FinalRequirements"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBEmployeeType</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:choose>
+                                <xsl:when test="contains($EmployeeType,'Part')">JTPT</xsl:when>
+                                <xsl:when test="contains($EmployeeType,'diem')">JTPD</xsl:when>
+                                <xsl:when test="contains($EmployeeType,'Diem')">JTPD</xsl:when>
+                                <xsl:when test="contains($EmployeeType,'Intern')">JTIN</xsl:when>
+                                <xsl:when test="contains($EmployeeType,'Seasonal')">JTSE</xsl:when>
+                                <xsl:when test="contains($EmployeeType,'Temp')">JTSE </xsl:when>
+                                <xsl:when test="contains($EmployeeType,'Contract')">JTCT</xsl:when>
+                                <xsl:when test="contains($EmployeeType,'Full')">JTFT</xsl:when>
+                                <xsl:otherwise>JTFT</xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBCity</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$City"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBState</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$State"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBCountry</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$Country"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBApplyURL</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="concat($JobURL, '&amp;jobboardid=82')"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBJobTitle</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:value-of select="$JobTitle"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <xsl:element name="Field">
+                        <xsl:attribute name="name">CBJobTypeCode</xsl:attribute>
+                        <xsl:attribute name="value">
+                            <xsl:choose>
+                                <xsl:when test="contains($category, 'Manager')">JN037</xsl:when>
+                                <xsl:when test="contains($category, 'Clerk')">JN002</xsl:when>
+                                <xsl:when test="contains($category, 'Management')">JN037</xsl:when>
+                                <xsl:when test="contains($category, 'Consulting')">JN020</xsl:when>
+                                <xsl:when test="contains($category, 'Business Development')">JN019</xsl:when>
+                                <xsl:when test="contains($category, 'Accounting')">JN001</xsl:when>
+                                <xsl:when test="contains($category, 'Engineering')">JN004</xsl:when>
+                                <xsl:when test="contains($category, 'Quality')">JN025</xsl:when>
+                                <xsl:when test="contains($category, 'Legal')">JN030</xsl:when>
+                                <xsl:when test="contains($category, 'Preconstruction')">JN043</xsl:when>
+                                <xsl:when test="contains($category, 'Customer Service')">JN003</xsl:when>
+                                <xsl:when test="contains($category, 'Superintendent')">JN037</xsl:when>
+                                <xsl:when test="contains($category, 'Sales')">JN011</xsl:when>
+                                <xsl:when test="contains($category, 'Scheduling')">JN006</xsl:when>
+                                <xsl:when test="contains($category, 'HR Administrative')">JN007,JN002</xsl:when>
+                                <xsl:when test="contains($category, 'Health')">JN023</xsl:when>
+                                <xsl:when test="contains($category, 'Administrative')">JN002</xsl:when>
+                                <xsl:when test="contains($category, 'Human Resources Manager')">JN007,JN037</xsl:when>
+                                <xsl:when test="contains($category, 'Human Resources')">JN007</xsl:when>
+                                <xsl:when test="contains($category, 'General Labor')">JN051</xsl:when>
+                                <xsl:when test="contains($category, 'Estimating')">JN020</xsl:when>
+                                <xsl:when test="contains($category, 'Construction Management')">JN043,JN037</xsl:when>
+                                <xsl:otherwise>JN010</xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:attribute>
+                    </xsl:element>
+                    <!-- EOJ-->
+                </xsl:element>
+                <!-- End of CB Job node -->
+            </xsl:for-each>
+            <!-- End of BM job node -->
+        </xsl:element>
+        <!-- End of Batch -->
+    </xsl:template>
+    <xsl:template name="replace_sab">
+        <!-- with string s, replace substring a by string b -->
+        <!-- s, a and b are parameters determined upon calling  -->
+        <xsl:param name="s"/>
+        <xsl:param name="a"/>
+        <xsl:param name="b"/>
+        <xsl:choose>
+            <xsl:when test="contains($s,$a)">
+                <xsl:value-of select="substring-before($s,$a)"/>
+                <xsl:copy-of select="$b"/>
+                <xsl:call-template name="replace_sab">
+                    <xsl:with-param name="s" select="substring-after($s,$a)"/>
+                    <xsl:with-param name="a" select="$a"/>
+                    <xsl:with-param name="b" select="$b"/>
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$s"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+</xsl:stylesheet>
